@@ -4,8 +4,6 @@
 ## Aim: 
 Development of Python Code Compatible with Multiple AI Tools
 
-## Algorithm: 
-Write and implement Python code that integrates with multiple AI tools to automate the task of interacting with APIs, comparing outputs, and generating actionable insights.
 
 ## Objective:
 Build a Python script that:
@@ -23,123 +21,50 @@ e. Generates reports or logs for further analysis.
 This process helps in benchmarking AI tools and determining the best tool for a particular task or use case.
 
 ## Procedure / Algorithm:
-### Step 1: Define the Use Case
-Choose a specific AI task where multiple tools can be compared, such as:
+ AI Tools by Modality
 
-a. Text summarization
+1. Image Generation
+	•	Stability AI (Stable Diffusion via Stability API)
+	•	OpenAI DALL·E
+	•	Hugging Face Diffusers (local or hosted models)
 
-b. Image generation
+2. Voice Enhancement
+	•	Adobe Enhance Speech (API access via Adobe Podcast)
+	•	ElevenLabs (for voice synthesis and enhancement)
+	•	iZotope RX (for pro audio cleanup, often used offline)
 
-c. Audio synthesis
+3. Video Generation
+	•	Runway ML (Gen-2)
+	•	Pika Labs
+	•	Synthesia (for avatar videos, more templated)
 
-d. Sentiment analysis
+1. Image Generation (Stable Diffusion via Stability AI)
+import requests
+'''python
+STABILITY_API_KEY = 'your-stability-api-key'
 
-e. Translation
-
-Example Use Case: Compare summarization capabilities of ChatGPT (OpenAI) and Cohere.
-
-### Step 2: Set Up API Access
-Register or subscribe to APIs of the tools you want to use.
-
-Store API keys securely (e.g., using environment variables or secrets module).
-
-```python
-import os
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-COHERE_API_KEY = os.getenv("COHERE_API_KEY")
-```
-
-### Step 3: Write API Interaction Functions
-Create reusable functions to interact with each AI service.
-
-```python
-
-import openai
-import cohere
-
-def get_openai_summary(text):
-    openai.api_key = OPENAI_API_KEY
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": f"Summarize this: {text}"}]
-    )
-    return response['choices'][0]['message']['content']
-
-def get_cohere_summary(text):
-    co = cohere.Client(COHERE_API_KEY)
-    response = co.summarize(text=text)
-    return response.summary
-```
-
-### Step 4: Prepare a Prompt Dataset
-Store a list of test inputs (e.g., articles or paragraphs) to run through both tools.
-
-```python
-
-test_inputs = [
-    "Artificial intelligence (AI) is rapidly evolving and...",
-    "Climate change is one of the most pressing issues..."
-]
-```
-
-### Step 5: Compare Outputs Programmatically
-Loop through inputs, collect summaries, and store them for analysis.
-
-```python
-
-results = []
-
-for text in test_inputs:
-    openai_output = get_openai_summary(text)
-    cohere_output = get_cohere_summary(text)
-    
-    comparison = {
-        "input": text,
-        "openai_summary": openai_output,
-        "cohere_summary": cohere_output
+def generate_image(prompt: str):
+    url = "https://api.stability.ai/v2beta/stable-image/generate/core"
+    headers = {
+        "Authorization": f"Bearer {STABILITY_API_KEY}",
+        "Content-Type": "application/json"
     }
-    results.append(comparison)
-```
-
-### Step 6: Generate Actionable Insights
-Apply analysis, such as:
-
-a. Word count comparison
-
-b. Sentiment scoring
-
-c. Keyword extraction
-
-d. Readability score
-
-```python
-
-from textblob import TextBlob
-
-def analyze_summary(summary):
-    blob = TextBlob(summary)
-    return {
-        "word_count": len(summary.split()),
-        "sentiment": blob.sentiment.polarity,
-        "readability": blob.sentiment.subjectivity
+    payload = {
+        "prompt": prompt,
+        "output_format": "png"
     }
 
-for result in results:
-    result["openai_analysis"] = analyze_summary(result["openai_summary"])
-    result["cohere_analysis"] = analyze_summary(result["cohere_summary"])
-```
+    response = requests.post(url, headers=headers, json=payload)
+    if response.ok:
+        with open("generated_image.png", "wb") as f:
+            f.write(response.content)
+        print("Image saved as generated_image.png")
+    else:
+        print("Error:", response.json())
 
-### Step 7: Output a Summary Report
-Export findings to JSON or CSV.
-
-```python
-
-import json
-
-with open("summary_comparison.json", "w") as f:
-    json.dump(results, f, indent=4)
-```
+# Example usage
+# generate_image("A futuristic city skyline at sunset")
+'''
 Result:
 The Python code successfully:
 
