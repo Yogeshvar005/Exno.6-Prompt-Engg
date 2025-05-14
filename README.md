@@ -38,9 +38,10 @@ This process helps in benchmarking AI tools and determining the best tool for a 
 	•	Pika Labs
 	•	Synthesia (for avatar videos, more templated)
 
-1. Image Generation (Stable Diffusion via Stability AI)
+### 1. Image Generation (Stable Diffusion via Stability AI)
+'''
 import requests
-'''python
+
 STABILITY_API_KEY = 'your-stability-api-key'
 
 def generate_image(prompt: str):
@@ -62,8 +63,8 @@ def generate_image(prompt: str):
     else:
         print("Error:", response.json())
 
-# Example usage
-# generate_image("A futuristic city skyline at sunset")
+### Example usage
+### generate_image("A futuristic city skyline at sunset")
 '''
 Result:
 The Python code successfully:
